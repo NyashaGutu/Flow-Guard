@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FlowGuard Prototype - Real-Time Monitoring</title>
+    <link rel="stylesheet" href="css/styles.css">
+
+</head>
+<body>
+    <header>
+        <h1>FlowGuard</h1>
+        <nav>
+            <ul>
+                <li><a href="home.html">Home</a></li>
+                <li><a href="monitoring.html">Monitoring</a></li>
+                <li><a href="Analytics.html">Analytics</a></li>
+            </ul>
+        </nav>
+    </header>
+    
+    <main>
+        <!-- Sections for Home, Monitoring, Alerts, Map, Analytics -->
+        <section class="hero">
+            <h1>Welcome to FlowGuard</h1>
+        </div>
+           
+        </section>
+        <section class="hero2">
+            <p>Monitor water quality in real-time and stay informed about potential issues.</p>
+        </div>
+
+        </section>
+    </main>
+    
+    <script src="js/app.js"></script>
+   
+    
+    <script>
+        // Replace with your ThingsBoard device token and URL
+        const DEVICE_TOKEN = 'your_device_token';
+        const THINGSBOARD_URL = 'https://your-thingsboard-instance/api/v1';
+        
+        async function fetchRealTimeData() {
+            try {
+                const response = await fetch(`${THINGSBOARD_URL}/${DEVICE_TOKEN}/telemetry?keys=temperature,pH,turbidity,oxygen`);
+                const data = await response.json();
+                
+                // Assume the response is in the format {temperature: [value], pH: [value], turbidity: [value], oxygen: [value]}
+                updateCharts(data);
+            } catch (error) {
+                console.error('Error fetching data:', error);
+            }
+        }
+        
+        function updateCharts(data) {
+            // Assume data is in the format {temperature: [value], pH: [value], turbidity: [value], oxygen: [value]}
+            waterQualityChart.data.datasets[0].data.push(data.temperature);
+            pHLevelChart.data.datasets[0].data.push(data.pH);
+            turbidityChart.data.datasets[0].data.push(data.turbidity);
+            dissolvedOxygenChart.data.datasets[0].data.push(data.oxygen);
+        
+            // Update the chart
+            waterQualityChart.update();
+            pHLevelChart.update();
+            turbidityChart.update();
+            dissolvedOxygenChart.update();
+        }
+        
+        // Fetch data every 10 seconds
+        setInterval(fetchRealTimeData, 10000);
+    </script>
+</body>
+</html>

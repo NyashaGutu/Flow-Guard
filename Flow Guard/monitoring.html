@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FlowGuard - Monitoring and Alerts</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <style>
+        /* Additional styling for the timer */
+        #timer {
+            font-size: 1.5rem;
+            margin-top: 20px;
+            color: #007bff;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>FlowGuard</h1>
+        <nav>
+            <ul>
+                <li><a href="Flow.html">Home</a></li>
+                <li><a href="monitoring.html">Monitoring</a></li>
+                <li><a href="Analytics.html">Analytics</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <section id="monitoring">
+            <h2>Real-Time Monitoring</h2>
+            <div id="sensor-data">
+                <p>pH Level: <span id="ph-level">Loading...</span></p>
+                <p>Turbidity: <span id="turbidity">Loading...</span></p>
+                <p>Dissolved Oxygen: <span id="dissolved-oxygen">Loading...</span></p>
+            </div>
+            <div id="timer">
+                Next update in: <span id="countdown">5</span> seconds
+            </div>
+        </section>
+        <section id="alerts">
+            <h2>Alerts</h2>
+            <div id="alerts-content">No alerts.</div>
+        </section>
+    </main>
+    <script>
+        // Define thresholds
+        const PH_THRESHOLD = { min: 6.5, max: 8.5 };
+        const TURBIDITY_THRESHOLD = { min: 0, max: 5 };
+        const DISSOLVED_OXYGEN_THRESHOLD = { min: 0, max: 10 };
+
+        // Function to generate mock sensor data
+        function generateMockData() {
+            return {
+                ph: (Math.random() * 3 + 6).toFixed(2), // pH level between 6 and 9
+                turbidity: (Math.random() * 10).toFixed(2), // Turbidity between 0 and 10 NTU
+                dissolvedOxygen: (Math.random() * 15).toFixed(2) // DO between 0 and 15 mg/L
+            };
+        }
+
+        // Function to simulate data fetch
+        function fetchSensorData() {
+            try {
+                // Generate mock data
+                const data = generateMockData();
+                console.log('Fetched data:', data); // Debugging line
+
+                const phLevel = data.ph;
+                const turbidity = data.turbidity;
+                const dissolvedOxygen = data.dissolvedOxygen;
+
+                // Update HTML with new data
+                document.getElementById('ph-level').textContent = phLevel;
+                document.getElementById('turbidity').textContent = turbidity;
+                document.getElementById('dissolved-oxygen').textContent = dissolvedOxygen;
+
+                // Check for alerts
+                checkAlerts(phLevel, turbidity, dissolvedOxygen);
+            } catch (error) {
+                console.error('Error fetching sensor data:', error);
+            }
+        }
+
+        // Function to check alerts
+        function checkAlerts(phLevel, turbidity, dissolvedOxygen) {
+            const alerts = [];
+
+            if (phLevel !== 'N/A') {
+                const ph = parseFloat(phLevel);
+                if (isNaN(ph)) {
+                    alerts.push('Invalid pH level data');
+                } else if (ph < PH_THRESHOLD.min || ph > PH_THRESHOLD.max) {
+                    alerts.push(`pH level out of range: ${ph}`);
+                }
+            }
+
+            if (turbidity !== 'N/A') {
+                const turb = parseFloat(turbidity);
+                if (isNaN(turb)) {
+                    alerts.push('Invalid turbidity data');
+                } else if (turb < TURBIDITY_THRESHOLD.min || turb > TURBIDITY_THRESHOLD.max) {
+                    alerts.push(`Turbidity out of range: ${turb}`);
+                }
+            }
+
+            if (dissolvedOxygen !== 'N/A') {
+                const dox = parseFloat(dissolvedOxygen);
+                if (isNaN(dox)) {
+                    alerts.push('Invalid dissolved oxygen data');
+                } else if (dox < DISSOLVED_OXYGEN_THRESHOLD.min || dox > DISSOLVED_OXYGEN_THRESHOLD.max) {
+                    alerts.push(`Dissolved Oxygen out of range: ${dox}`);
+                }
+            }
+
+            displayAlerts(alerts);
+        }
+
+        // Function to display alerts
+        function displayAlerts(alerts) {
+            const alertsContent = document.getElementById('alerts-content');
+            if (alerts.length > 0) {
+                alertsContent.innerHTML = alerts.map(alert => 
+                    `<div style="padding: 1rem; margin: 1rem 0; border-radius: 5px; color: red; font-size: 1rem;">${alert}</div>`
+                ).join('<br>');
+            } else {
+                alertsContent.innerHTML = '<div style="padding: 1rem; margin: 1rem 0; border-radius: 5px; color: red; font-size: 1rem;">No alerts.</div>';
+            }
+        }
+
+        // Function to start the 5-second countdown
+        function startCountdown() {
+            let countdownElement = document.getElementById('countdown');
+            let countdown = 5;
+
+            // Update the countdown every second
+            let countdownInterval = setInterval(function() {
+                countdown--;
+                countdownElement.textContent = countdown;
+
+                // When countdown reaches 0, clear the interval
+                if (countdown <= 0) {
+                    clearInterval(countdownInterval);
+                }
+            }, 1000); // 1000 milliseconds = 1 second
+        }
+
+        // Fetch data and update every 5 seconds
+        setInterval(function() {
+            fetchSensorData();
+            startCountdown();
+        }, 5000);
+
+        // Initial fetch and countdown
+        fetchSensorData(); 
+        startCountdown();
+    </script>
+</body>
+</html>
+

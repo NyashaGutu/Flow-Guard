@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FlowGuard - Data Analytics</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <style>
+        #dashboard {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px; /* Space between widgets */
+            justify-content: center;
+        }
+        .widget {
+            flex: 1 1 calc(50% - 20px); /* Two columns layout with gap consideration */
+            max-width: 500px; /* Maximum width for each widget */
+            position: relative;
+            box-sizing: border-box;
+        }
+        .widget canvas {
+            width: 100%; /* Make canvas fit the container */
+            height: auto;
+        }
+        .export-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>FlowGuard</h1>
+        <nav>
+            <ul>
+                <li><a href="Flow.html">Home</a></li>
+                <li><a href="monitoring.html">Monitoring</a></li>
+                <li><a href="Analytics.html">Analytics</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section id="analytics">
+            <h2>Data Analytics</h2>
+            <p>Analyze water quality data over time using the charts below.</p>
+
+            <div id="dashboard">
+                <div class="widget" id="chart1">
+                    <canvas id="waterQualityChart" width="400" height="200"></canvas>
+                    <button class="export-btn" onclick="exportChart('waterQualityChart')">Export</button>
+                </div>
+                <div class="widget" id="chart2">
+                    <canvas id="pHLevelChart" width="400" height="200"></canvas>
+                    <button class="export-btn" onclick="exportChart('pHLevelChart')">Export</button>
+                </div>
+                <div class="widget" id="chart3">
+                    <canvas id="turbidityChart" width="400" height="200"></canvas>
+                    <button class="export-btn" onclick="exportChart('turbidityChart')">Export</button>
+                </div>
+                <div class="widget" id="chart4">
+                    <canvas id="dissolvedOxygenChart" width="400" height="200"></canvas>
+                    <button class="export-btn" onclick="exportChart('dissolvedOxygenChart')">Export</button>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // Function to export chart
+        function exportChart(chartId) {
+            var canvas = document.getElementById(chartId);
+            var link = document.createElement('a');
+            link.href = canvas.toDataURL('image/png');
+            link.download = chartId + '.png';
+            link.click();
+        }
+
+        // Water Quality Index Chart
+        var waterQualityCtx = document.getElementById('waterQualityChart').getContext('2d');
+        var waterQualityChart = new Chart(waterQualityCtx, {
+            type: 'line',
+            data: {
+                labels: ['January', 'February', 'March', 'April', 'May', 'June'],
+                datasets: [{
+                    label: 'Water Quality Index',
+                    data: [65, 59, 80, 81, 56, 55, 40],
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: '2024'
+                        }
+                    },
+                    y: {
+                        title: {
+                            display: true,
+                            text: 'Water Quality Index'
+                        },
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+
+        // pH Level Chart
+        var pHLevelCtx = document.getElementById('pHLevelChart').getContext('2d');
+        var pHLevelChart = new Chart(pHLevelCtx, {
+            type: 'line',
+            data: {
+                labels: ['January', 'February', 'March', 'April', 'May', 'June'],
+                datasets: [{
+                    label: 'pH Level',
+                    data: [7.2, 7.0, 6.8, 7.4, 7.3, 7.1],
+                    backgroundColor: 'rgba(153, 102, 255, 0.2)',
+                    borderColor: 'rgba(153, 102, 255, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: '2024'
+                        }
+                    },
+                    y: {
+                        title: {
+                            display: true,
+                            text: 'pH Level'
+                        },
+                        beginAtZero: false
+                    }
+                }
+            }
+        });
+
+        // Turbidity Chart
+        var turbidityCtx = document.getElementById('turbidityChart').getContext('2d');
+        var turbidityChart = new Chart(turbidityCtx, {
+            type: 'line',
+            data: {
+                labels: ['January', 'February', 'March', 'April', 'May', 'June'],
+                datasets: [{
+                    label: 'Turbidity (NTU)',
+                    data: [1, 0.8, 1.2, 1.1, 0.9, 1.0],
+                    backgroundColor: 'rgba(255, 206, 86, 0.2)',
+                    borderColor: 'rgba(255, 206, 86, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: '2024'
+                        }
+                    },
+                    y: {
+                        title: {
+                            display: true,
+                            text: 'Turbidity (NTU)'
+                        },
+                        beginAtZero: false
+                    }
+                }
+            }
+        });
+
+        // Dissolved Oxygen Chart
+        var dissolvedOxygenCtx = document.getElementById('dissolvedOxygenChart').getContext('2d');
+        var dissolvedOxygenChart = new Chart(dissolvedOxygenCtx, {
+            type: 'line',
+            data: {
+                labels: ['January', 'February', 'March', 'April', 'May', 'June'],
+                datasets: [{
+                    label: 'Dissolved Oxygen (mg/L)',
+                    data: [8, 8.5, 7.9, 8.1, 8.3, 8.2],
+                    backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: '2024'
+                        }
+                    },
+                    y: {
+                        title: {
+                            display: true,
+                            text: 'Dissolved Oxygen (mg/L)'
+                        },
+                        beginAtZero: false
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>
